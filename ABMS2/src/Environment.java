@@ -21,10 +21,11 @@ public class Environment extends JFrame{
 	private Pannel pan= new Pannel();
 	int sizeNode= 50;
 	
-	public static Node[] node= new Node[100]; //Table of nodes
-	public static Agent[] agent= new Agent[100]; // Table of agents
-	public static Link[] link= new Link[100];
-	public static int time = 0;
+	public static Node[] node= new Node[500]; //Table of nodes
+	public static Agent[] agent= new Agent[500]; // Table of agents
+	public static Link[] link= new Link[500];
+	public static Schedular[] schedular = new Schedular[500];
+	public static int time;
 	
 	Timer timer;
 
@@ -119,9 +120,10 @@ public class Environment extends JFrame{
 	private void setEnv(){
 
 		// Nodes
-		for (int i=1;i<=Parameters.getTotalNbNodes();i++){ // We create the nodes by assigning them ID
+		for (int i=1; i<=Parameters.getTotalNbNodes(); i++){ // We create the nodes and schedulers by assigning them ID
 			node[i-1]= new Node(i-1);
 			System.out.println("Node id " + node[i-1].getIdNode()+ " created");
+			schedular[i-1] = new Schedular(i-1);
 		}
 
 		// Agents
@@ -148,9 +150,10 @@ public class Environment extends JFrame{
 		for(int i=0;i<Parameters.getTotalNbLinks();i++){
 			link[i]=new Link(Parameters.getTabLink(i),Parameters.getTabLink2(i));
 		}
-		for(int j = 1; j <= Parameters.getTotalNbNodes(); j++) {
-			node[j-1].setContentNode();
+		for(int j = 0; j < Parameters.getTotalNbNodes(); j++) {
+			node[j].setContentNode();
 		}
+		time = 0;
 	}
 	
 	public int getTime() {

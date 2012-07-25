@@ -1,5 +1,5 @@
 number of nodes(max 6):5
-number of agents:5
+number of agents:15
 number of links:5
 link 1 between node n° :1:2
 link 2 between node n° :1:3

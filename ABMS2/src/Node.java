@@ -1,7 +1,7 @@
 public class Node {
 
 	private int idNode;// Identifier of the node
-	private int []agents; 
+	private int []agentsPresence; 
 
 	Agent agent[];
 	
@@ -11,11 +11,11 @@ public class Node {
 	}
 	
 	public void setContentNode () {
-		for (int i = 1; i <= Parameters.getTotalNbAgents(); i++) {
-			if (agent[i-1].getIdActualNode() == this.idNode) {
-				agents[i-1] = 1;
+		for (int i = 0; i < Parameters.getTotalNbAgents(); i++) {
+			if (agent[i].getIdActualNode() == this.getIdNode()) {
+				agentsPresence[i] = 1;
 			} else {
-				agents[i-1] = 0;
+				agentsPresence[i] = 0;
 			}
 		}
 	}
@@ -26,7 +26,7 @@ public class Node {
 	}
 	
 	public int getAgentPlacement(int idAgent) {
-		return agents[idAgent];
+		return agentsPresence[idAgent];
 	}
 
 	public void setIdNode(int idNode) {
@@ -34,6 +34,6 @@ public class Node {
 	}
 	
 	public void setAgentPlacement (int idAgent, int flag) {
-		agents[idAgent] = flag;
+		agentsPresence[idAgent] = flag;
 	}
 }

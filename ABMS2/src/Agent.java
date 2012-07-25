@@ -5,9 +5,11 @@ public class Agent {
 	private int idActualNode; // Identifier of his current node
 	private int posX; // X position in the environment
 	private int posY; // Y position in the environment
-	private int[] MessagesReceived= new int[10];
-	private int[] MessagesSender= new int[10];
+	private int[] MessagesReceived = new int[500];
+	private int[] MessagesSender = new int[500];
+	private int[] MessageTime = new int[500];
 	
+	Schedular schedular[];
 	Node node[];
 	Agent agent[];
 	Environment env;
@@ -36,7 +38,32 @@ public class Agent {
 	
 	//Behaviour of the Agent
 	public void Step() {
-		
+		int tmp;
+		for(int i = 0; i < Parameters.getTotalNbAgents(); i++) {
+			tmp = countAgentsIntoNode(i);
+			for(int j = 0; j < Parameters.getTotalNbNodes(); j++) {
+				if (linkExist(agent[i].getIdActualNode(), node[j].getIdNode()) && tmp < countAgentsIntoNode(j)) {
+					tmp = j;
+				}
+			}
+			if (tmp != countAgentsIntoNode(i)) {
+				agent[i].scheduleAction(tmp, 1, 0, env.getTime()+1);
+			}
+		}
+	}
+	
+	//Method to schedule the actions
+	public void scheduleAction (int idTarget, int action, int content, int time) {
+		int i = 0;
+		int tmp = this.getIdActualNode();
+		while (schedular[tmp].getActions(i) != 0) {
+			i++;
+		}
+		schedular[tmp].setActions(i, action);
+		schedular[tmp].setActionCommander(i, this.getIdAgent());
+		schedular[tmp].setActionTarget(i, idTarget);
+		schedular[tmp].setActionContent(i, content);
+		schedular[tmp].setActionTime(i, time);
 	}
 	
 	
@@ -51,7 +78,7 @@ public class Agent {
 			return flag;
 		}
 		
-		// Move from one node to another one
+	// Move from one node to another one
 	public void move(int idNodeDest){
 			if (linkExist(this.getIdActualNode(),idNodeDest)) {
 				unregisterIntoNode(idActualNode);
@@ -83,17 +110,18 @@ public class Agent {
 			}
 			agent[idAgentDest].setMessageReceived(i, msg);
 			agent[idAgentDest].setMessageSender(i, this.getIdAgent());
+			agent[idAgentDest].setMessageTime(i);
 			System.out.println("message successfully sent between "+this.getIdAgent()+" and "+idAgentDest+" : "+msg);
 		}
 
 		//register the agent into a node when moving
 	public void registerIntoNode (int idNode) {
 		node[idNode].setAgentPlacement(idNode, 1);
-		for (int i = 0; i < Parameters.getTotalNbAgents(); i++) {
+		/*for (int i = 0; i < Parameters.getTotalNbAgents(); i++) {
 			if ( node[idNode].getAgentPlacement(i) != 0) {
 				this.sendMessage(1, i);
 			}
-		}
+		}*/
 	}
 	
 		//returns the number of agents in a defined node
@@ -109,11 +137,11 @@ public class Agent {
 	
 		//unregister the agent into a node when leaving
 	public void unregisterIntoNode (int idNode) {
-		for(int i = 0; i < Parameters.getTotalNbAgents(); i++) {
+		/*for(int i = 0; i < Parameters.getTotalNbAgents(); i++) {
 			if (node[this.getIdActualNode()].getAgentPlacement(i) != 0) {
 				this.sendMessage(2, i);
 			}
-		}
+		}*/
 		node[idNode].setAgentPlacement(idNode, 0);
 	}
 		
@@ -152,7 +180,7 @@ public class Agent {
 	}
 
 	public int getMessagesReceived(int i) {
-		return MessagesReceived[i];
+		return this.MessagesReceived[i];
 	}
 
 	public int getMessagesSender(int i) {
@@ -166,4 +194,10 @@ public class Agent {
 	public void setMessageSender (int i, int id) {
 		this.MessagesSender[i] = id;
 	}
+	
+	public void setMessageTime (int i) {
+		this.MessageTime[i] = env.getTime();
+	}
+	
+	
 }
